@@ -18,7 +18,7 @@ driver.get(url)
 time.sleep(2)
 
 html = driver.page_source
-raw_soup = BeautifulSoup(html)
+raw_soup = BeautifulSoup(html, features="html.parser")
 #remove white space
 processed_soup = raw_soup.get_text(" ", strip=True)
 
@@ -26,7 +26,7 @@ driver.close()
 #------------------------------------------------------
 
 soups.append(str(processed_soup))
-print(soups)
+# print(soups)
 
 #--summarizer------------------------------------------
 model_name = "allenai/led-large-16384-arxiv"
