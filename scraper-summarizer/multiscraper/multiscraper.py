@@ -37,9 +37,10 @@ def scraper(link, driver=driver):
 
     html = driver.page_source
     raw_soup = BeautifulSoup(html, features="html.parser")
+    
+    paragraphs = raw_soup.find_all('p')
 
-    #remove white space
-    return raw_soup.get_text(" ", strip=True)
+    return " ".join([p.get_text(" ", strip=True) for p in paragraphs])
 
 #make file name from url
 def file_name_from_url(url):
@@ -48,30 +49,48 @@ def file_name_from_url(url):
     return f"{file_name}_soup.txt"
 
 #list of sites to scrape---------------------------------------------------------------------------------------------------------------------
-start_urls_list = ["https://www.bsmlawfirm.com/", "https://www.pinnacletravelstaffing.com/", "https://www.holisticaindiana.com/",
-    "https://www.lefrancoisfloralandgifts.com/", "https://www.k9coaturesalon.com/", "https://www.enlightenvue.com/", "https://www.gravyty.com/",
-    "https://www.luxurgerynyc.com/", "https://www.feldmaraesthetics.com/", "https://www.smartwich.com/", "https://www.moheganlakevet.com/",
-    "https://www.k-recruiting.com/en-US/", "https://www.besler.com/", "https://www.njrealestateschool.education/","https://www.sollers.edu/",
-    "https://www.beckyrickenbaker.net/", "https://www.thepureconfections.com/", "https://www.wiserhomeremodeling.com/",
-    "https://www.quantuvos.com/", "https://www.brightway.com/", "https://www.dovetail.com/", "https://www.payprop.com/us",
-    "https://www.assortedinternet.com/", "https://www.drzaydon.com/", "https://www.simonschindler.com/", "https://www.tinyteethsmiles.com/", 
-    "https://www.southernheritagehome.com/", "https://www.secur-tek.com/", "https://www.kinis.com/", "https://www.corlinproductions.com/",
-    "https://www.sites.google.com/ualr.edu/ar-aims-science-preview-2021/home", "https://www.retireto.com/", "https://www.metisgp.com/",
-    "https://www.henryadams.com/", "https://www.bluebutterflycreations.net/", "https://www.clermontdental.care/",
-    "https://www.brandywinevalleypsychiatry.com/", "https://www.viper-drones.com/", "https://www.lithoprintingjoplin.com/",
-    "https://www.cardinalgymnastics.com/", "https://www.nouveaumedspa.com/", "https://www.gyaninfosystems.com/", "https://www.anasaziwines.com/",
-    "https://www.studiodado.com/", "https://www.avviato.com/", "https://www.myspinc.com/", "https://www.4urhires.com/", "https://www.decisiongps.com",
-    "https://www.thehrmanager.co/", "https://www.aconlv.org/", "https://www.g4bygolpa.com/", "https://mss.styleseat.com/aboutus/",
-    "https://www.signups.ws/", "https://www.esasolutions.com/", "https://www.relicx.ai/",
-    "https://store.ameliocenterprises.com/","https://www.serialgrillersaz.com/","https://www.bradshawfamilydental.com/",
-    "https://www.arnitsolutions.com/", "https://www.score.org/", "https://www.lakewoodflorist.org/",
-    "https://www.courtyardsalonstexas.com/", "https://www.klassygreekemblems.com/", "https://www.thekitchenstudios.net/",
-    "https://www.wildwestguitars.com/", "https://www.paymentlogistics.com/", "https://www.crdn.com/", "https://www.missionrebirth.com/", 
-    "https://www.andellbrownlaw.com/","https://www.educaninebayarea.com/", "https://www.ftft.com/", "https://www.zonazerostudios.com/", 
-    "https://www.northgabankruptcy.com/","https://www.currance.com/", "https://www.foothillspediatricdentist.com/", "https://www.truesec.com/", 
-    "https://www.kssnyc.co/", "https://www.virocell.com/","https://www.elements.cloud/", "https://www.ohtsukaamerica.com/", "https://www.wildwood.com/alosis-bistro", 
-    "https://www.fishdog.net/","https://www.redemptionfitnessholt.com/", "https://www.mizpahchicago.com/", "https://www.thenestfurnishings.com/", 
-    "https://www.austinstrategy.com/","https://www.rjeffrey.com/", "https://www.theleague.global/"
+start_urls_list = ["https://bsmlawfirm.com/practice-areas","https://www.pinnacletravelstaffing.com/about","https://www.holisticaindiana.com/",
+"https://www.lefrancoisfloralandgifts.com/about_us.php","https://k9coaturesalon.com/services/","https://enlightenvue.com/",
+"https://gravyty.com/", "https://gravyty.com/alumni-engagement/", "https://gravyty.com/fundraising/","https://www.luxurgerynyc.com/services/",
+"https://feldmaraesthetics.com/","https://www.smartwich.com/", "https://www.smartwich.com/smartwiches","https://www.moheganlakevet.com/", 
+"https://www.moheganlakevet.com/services/wellness-services", "https://www.moheganlakevet.com/services/puppies-and-kittens", 
+"https://www.moheganlakevet.com/services/diagnostic-services", "https://www.moheganlakevet.com/services/spay-neuter-and-surgical-services", 
+"https://www.moheganlakevet.com/services/spay-neuter-and-surgical-services", "https://www.moheganlakevet.com/services/online-pharmacy",
+"https://k-recruiting.com/en-US/about-us","https://www.besler.com/","https://njrealestateschool.education/","https://sollers.college/",
+"https://www.beckyrickenbaker.net/","https://pureconfections.site/index.html","https://www.wiserhomeremodeling.com/",
+"https://www.brightway.com/"," https://www.brightway.com/insurance/property", "https://www.brightway.com/insurance/vehicle", 
+"https://www.brightway.com/insurance/other","https://dovetail.com/#recruit","https://www.payprop.com/us/features", 
+"https://www.payprop.com/us", "https://www.assortedinternet.com/seoservices.php", "https://www.assortedinternet.com/hosting.php", 
+"https://www.assortedinternet.com/cgiscripts.php", "https://www.assortedinternet.com/reseller.php","https://drzaydon.com/procedures/",
+"https://www.simonschindler.com/practice-areas/","https://www.tinyteethsmiles.com/services/","https://www.southernheritagehome.com/",
+"https://secur-tek.com/commercial-services/", "https://secur-tek.com/residential-services/","https://www.kinis.com/products",
+"https://www.corlinproductions.com/services.html", "https://www.corlinproductions.com/about.html",
+"https://sites.google.com/ualr.edu/ar-aims-science-preview-2021/about-ar-aims?authuser=0","https://retireto.com/what-we-do/", 
+"https://retireto.com/investment-planning/", "https://retireto.com/retirement-income-spending-plan/", "https://retireto.com/estate-legacy-plan/",
+"https://www.metisgp.com/","https://henryadams.com/services","https://www.bluebutterflycreations.net/","https://clermontdental.care/services/",
+"https://www.brandywinevalleypsychiatry.com/#Services", "https://www.viper-drones.com/","https://www.lithoprintingjoplin.com/",
+"https://www.cardinalgymnastics.com/","https://nouveaumedspa.com/#","https://www.gyaninfosystems.com/overview", "https://www.gyaninfosystems.com/services",
+"https://anasaziwines.com/about-anasazi-wines/","https://www.studiodado.com/about-us/","https://www.avviato.com/","https://www.myspinc.com/",
+"https://www.4urhires.com/#aboutus","https://www.thehrmanager.co/our-services","https://www.aconlv.org/","https://www.g4bygolpa.com/",
+"https://mss.styleseat.com/aboutus/",
+"https://signups.ws/products-and-services", "https://signups.ws/all-about-signups",
+"https://www.esasolutions.com/services","https://www.relicx.ai/products/test-creation", "https://www.relicx.ai/products/test-execution", 
+"https://www.relicx.ai/products/test-case-generation", "https://www.relicx.ai/","http://www.copackaz.com/","https://www.serialgrillersaz.com/about",
+"https://www.bradshawfamilydental.com/p/dentist-Prescott-Valley-Dental+Services-p15027.asp", 
+"https://www.bradshawfamilydental.com/p/sleep-apnea-Prescott-Valley-Sleep+Medicine-p14268.asp",
+"https://www.arnitsolutions.com/","https://www.score.org/find-mentor/how-it-works","https://www.lakewoodflorist.org/about-us",
+"https://courtyardsalonstexas.com/services-offered/","https://www.klassygreekemblems.com/","https://thekitchenstudios.net/","https://wildwestguitars.com/about",
+"https://fortispay.com/solutions/","https://www.crdn.com/who-we-serve", "https://www.crdn.com/about-us","https://www.missionrebirth.com/",
+"https://www.andellbrownlaw.com/","https://www.educaninebayarea.com/board-train","https://www.ftft.com/en/business.html", 
+"https://www.ftft.com/en/about/who_we_are/","https://www.zonazerostudios.com/","https://www.northgabankruptcy.com/",
+"https://www.currance.com/approach/","https://www.foothillspediatricdentist.com/","https://www.truesec.com/service",
+"https://www.kssnyc.co/microsoft-365/", "https://www.kssnyc.co/systems-engineering/", "https://www.kssnyc.co/it-staffing/", 
+"https://www.kssnyc.co/software-hardware-sales/", "https://www.kssnyc.co/cybersecurity/",
+"https://virocell.com/what-we-do","https://elements.cloud/salesforce-change-intelligence-platform/?utm_campaign=Change%20Intelligence%20Q1%20FY23&utm_source=login-page",
+"https://ohtsukaamerica.com/#company","https://www.wildwood.com/wildwood-101-introduction","https://www.wildwood.com/welcome-to-wildwood",
+"https://www.fishdog.net/","https://www.redemptionfitnessholt.com/mission", "https://www.redemptionfitnessholt.com/",
+"https://www.mizpahchicago.com/","https://www.thenestfurnishings.com/","https://austinstrategy.com/services", "https://austinstrategy.com/",
+"https://www.rjeffrey.com/", "https://rjeffrey.com/industries_wotc/","https://www.theleague.global/services"
 ]
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,7 +98,7 @@ start_urls_list = ["https://www.bsmlawfirm.com/", "https://www.pinnacletravelsta
 errored_urls = []
 
 #for loop to scrape each site
-for link in start_urls_list:
+for link in start_urls_list[:5]:
     if not os.path.exists(f"scraped/{file_name_from_url(link)}"):
         soups = []
         #get all links accessible from homepage
