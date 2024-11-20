@@ -115,10 +115,11 @@ with col1:
             driver.close()
 
             with st.spinner("Summarizing Information"):
-                summarize(text=scrape_list)
+                summarized = summarize(text=scrape_list)
 
             # Display a loading message
             with st.spinner("NAICS code loading..."):
+                #API HERE
                 time.sleep(4)  # Simulate a loading process (e.g., fetching NAICS code)
             
             st.success("NAICS code determined!")
