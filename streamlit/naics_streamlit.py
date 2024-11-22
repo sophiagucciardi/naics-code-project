@@ -62,9 +62,9 @@ def summarize(text):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
-    pipe = pipeline("text2text-generation", model=model, tokenizer=tokenizer, device=0)
+    pipe = pipeline("text2text-generation", model=model, tokenizer=tokenizer, device=-1)
 
-    summary = pipe(
+    result = pipe(
         text,
         truncation=True, 
         max_length=500, 
@@ -72,7 +72,9 @@ def summarize(text):
         num_beams=3, 
         early_stopping=True
         )
-
+    
+    summary = result[0]['generated_text']
+    return summary
 
 #STREAMLIT--------------------------------------------------------------------------------------------------------
 st.set_page_config(layout="wide")
@@ -94,7 +96,7 @@ with col1:
     if company_url:
         if company_url.startswith("http://") or company_url.startswith("https://"):
             st.success(f"Valid URL: {company_url}")
-            
+
             for url in urls:
                 try:
                     with st.spinner("Scraping Page(s)"):
@@ -116,13 +118,68 @@ with col1:
 
             with st.spinner("Summarizing Information"):
                 summarized = summarize(text=scrape_list)
-
+                
             # Display a loading message
             with st.spinner("NAICS code loading..."):
-                #API HERE
-                time.sleep(4)  # Simulate a loading process (e.g., fetching NAICS code)
+                from groq import Groq
+                api_key = "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"
+                client = Groq(api_key=api_key)
+
+                # Prompt preparation
+                website = f"{url}"
+                user_prompt = f"""
+                Given the data scraped from {website}, identify the most probable NAICS code for the company described. 
+                Additionally, provide a bulleted list explaining how each part of the NAICS code was derived, including:
+                - The main economic sector
+                - The subsector
+                - The industry group
+                - The NAICS industry
+                - The national industry
+                Provide the explanation using keywords or phrases from the scraped data that contributed to identifying each part of the code. 
+
+                ONLY PROVIDE THE NAICS CODE AND EXPLANATION IN THE FOLLOWING FORMAT:
+
+                NAICS Code: [NAICS CODE]
+                Explanation:
+                - Main Economic Sector: [Sector]
+                - Subsector: [Subsector]
+                - Industry Group: [Industry Group]
+                - NAICS Industry: [Industry Name]
+                - National Industry: [National Industry]
+
+                No other text is required.
+                """
+
+
+
+                completion = client.chat.completions.create(
+                    model="llama3-8b-8192",
+                    messages=[
+                        {"role": "user", "content": summarized},
+                        {"role": "user", "content": user_prompt}
+                        ],
+                    temperature=1,
+                    max_tokens=1024,
+                    top_p=1,
+                    stream=True,
+                    stop=None
+                )    
+
+                naics_code = ""
+
+                for chunk in completion:
+                    naics_code += chunk.choices[0].delta.content or ""
+                # Extract response
+                # naics_code = ""
+                # for chunk in completion:
+                #     naics_code += chunk.choices[0].delta.content or ""
+                
+                # Display results
+                st.success(f"NAICS code determined: {naics_code.strip()}")
+
+                # time.sleep(4)  # Simulate a loading process (e.g., fetching NAICS code)
             
-            st.success("NAICS code determined!")
+            # st.success("NAICS code determined!")
 
         else:
             st.error("Please enter a valid URL starting with http:// or https://")
