@@ -113,3 +113,7 @@ xxhash==3.5.0
 yarl==1.16.0
 zipp==3.20.2
 groq
+dotenv
+pandas
+sentence-transformers
+scikit-learn

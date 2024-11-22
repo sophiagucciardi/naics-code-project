@@ -7,6 +7,23 @@ from selenium import webdriver
 import re, time, os
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import os
+from dotenv import load_dotenv
+from groq import Groq
+
+import pandas as pd
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+naics_df = pd.read_csv('NAICS_KEYWORDS.csv')
+model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+naics_embeddings = model.encode(naics_df['2022 NAICS Keywords'].tolist())
+
+def get_relevant_naics(summary, naics_embeddings, naics_df, top_n=5):
+    summary_embedding = model.encode([summary])
+    similarities = cosine_similarity(summary_embedding, naics_embeddings)
+    top_indices = similarities[0].argsort()[-top_n:][::-1]
+    relevant_naics = naics_df.iloc[top_indices]     
+    return relevant_naics
 
 #progress bar:
 def progress_bar(progress):
@@ -121,14 +138,17 @@ with col1:
                 
             # Display a loading message
             with st.spinner("NAICS code loading..."):
-                from groq import Groq
-                api_key = "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"
+                load_dotenv()
+                api_key = os.getenv("APIkey")
                 client = Groq(api_key=api_key)
+
+                relevant_naics = get_relevant_naics(summarized, naics_embeddings, naics_df)
 
                 # Prompt preparation
                 website = f"{url}"
                 user_prompt = f"""
                 Given the data scraped from {website}, identify the most probable NAICS code for the company described. 
+                The NAICS code must be a valid and existing code from the NAICS hierarchy. 
                 Additionally, provide a bulleted list explaining how each part of the NAICS code was derived, including:
                 - The main economic sector
                 - The subsector
@@ -137,20 +157,28 @@ with col1:
                 - The national industry
                 Provide the explanation using keywords or phrases from the scraped data that contributed to identifying each part of the code. 
 
-                ONLY PROVIDE THE NAICS CODE AND EXPLANATION IN THE FOLLOWING FORMAT:
+                IMPORTANT: 
+                - Only predict officially recognized U.S. NAICS codes from the most recent NAICS classification.
+                - Do not include NAICS codes from other countries or regions.
+                - Do not fabricate or guess codes or numbers that do not follow the U.S. NAICS structure.
+                - Ensure the code reflects the latest updates to the U.S. NAICS system.
 
-                NAICS Code: [NAICS CODE]
+                Here are some possible NAICS codes with their descriptions:
+                {relevant_naics[['NAICS Code', 'Description']]}
+                
+                FORMAT YOUR RESPONSE STRICTLY AS FOLLOWS:
+
+                [Valid NAICS Code]
+
                 Explanation:
-                - Main Economic Sector: [Sector]
+                - Main Economic Sector: [Sector] 
                 - Subsector: [Subsector]
                 - Industry Group: [Industry Group]
                 - NAICS Industry: [Industry Name]
                 - National Industry: [National Industry]
 
-                No other text is required.
+                No other text or explanation is required.
                 """
-
-
 
                 completion = client.chat.completions.create(
                     model="llama3-8b-8192",
