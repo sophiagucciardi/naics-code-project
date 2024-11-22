@@ -164,7 +164,7 @@ with col1:
                 - Ensure the code reflects the latest updates to the U.S. NAICS system.
 
                 Here are some possible NAICS codes with their descriptions:
-                {relevant_naics[['NAICS Code', 'Description']]}
+                {relevant_naics[['2022 NAICS Code', '2022 NAICS Keywords']]}
                 
                 FORMAT YOUR RESPONSE STRICTLY AS FOLLOWS:
 
