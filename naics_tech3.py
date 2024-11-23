@@ -10,21 +10,6 @@ import os
 from dotenv import load_dotenv
 from groq import Groq
 
-# import pandas as pd
-# from sentence_transformers import SentenceTransformer
-# from sklearn.metrics.pairwise import cosine_similarity
-
-# naics_df = pd.read_csv('NAICS_KEYWORDS.csv')
-# model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
-# naics_embeddings = model.encode(naics_df['2022 NAICS Keywords'].tolist())
-
-# def get_relevant_naics(summary, naics_embeddings, naics_df, top_n=5):
-#     summary_embedding = model.encode([summary])
-#     similarities = cosine_similarity(summary_embedding, naics_embeddings)
-#     top_indices = similarities[0].argsort()[-top_n:][::-1]
-#     relevant_naics = naics_df.iloc[top_indices]     
-#     return relevant_naics
-
 #progress bar:
 def progress_bar(progress):
 
@@ -141,8 +126,6 @@ with col1:
                 load_dotenv()
                 api_key = os.getenv("APIkey")
                 client = Groq(api_key=api_key)
-
-                # relevant_naics = get_relevant_naics(summarized, naics_embeddings, naics_df)
 
                 # Prompt preparation
                 website = f"{url}"
