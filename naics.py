@@ -84,7 +84,7 @@ def summarize(text):
     result = pipe(
         text,
         truncation=True, 
-        max_length=500, 
+        max_length=750, 
         no_repeat_ngram_size=5, 
         num_beams=3, 
         early_stopping=True
