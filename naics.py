@@ -158,10 +158,10 @@ with col1:
                 Provide the explanation using keywords or phrases from the scraped data that contributed to identifying each part of the code. 
 
                 IMPORTANT: 
-                - Only predict officially recognized U.S. NAICS codes from the most recent NAICS classification.
+                - Only predict officially recognized codes from the most recent NAICS classification.
                 - Do not include NAICS codes from other countries or regions.
-                - Do not fabricate or guess codes or numbers that do not follow the U.S. NAICS structure.
-                - Ensure the code reflects the latest updates to the U.S. NAICS system.
+                - Do not fabricate or guess codes or numbers that do not follow the structure.
+                - Ensure the code reflects the latest updates to the system.
 
                 Here are some possible NAICS codes with their descriptions:
                 {relevant_naics[['2022 NAICS Code', '2022 NAICS Keywords']]}
