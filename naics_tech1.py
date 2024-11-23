@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 from groq import Groq
 
+
 #progress bar:
 def progress_bar(progress):
 
@@ -129,14 +130,8 @@ with col1:
 
                 # Prompt preparation
                 website = f"{url}"
-                user_prompt = f"""Consider the following examples: 
-                    According to the company’s website, https://ascofwi.com/,  Advanced Spine Center of Wisconsin, LLC is an outpatient surgery center which specializes in spinal surgeries. The business’ NAICS code is 621498 - All Other Outpatient Care Centers. 
-                    According to the company’s website, https://www.goldkeypropertiesal.com/, GOLD KEY PROPERTIES LLC is a real estate company specializing in helping customers buy or sell Single Family homes, Condominiums, Townhouses, Land, and Commercial real estate purchases. The business’ NAICS code is 531210 - Offices of Real Estate Agents and Brokers. 
-                    According to the company’s website, https://www.fundapps.co/, FUNDAPPS LLC makes regulatory software for cloud-based compliance monitoring and reporting. The business’ NAICS code is 541512 - Computer Systems Design Services. 
-                    According to the company’s website, https://shop.lamy.com/en, Lamy Inc manufactures and sells high end writing instruments and accessories.  Their products include a variety of pens, painting and drawing supplies, and ink. The business’ NAICS code is 339940 - Office Supplies (except Paper) Manufacturing. 
-                    According to the company’s website, https://wtgrantfoundation.org/, the WILLIAM T. GRANT FOUNDATION, INC. is a non-profit organization which invests in high-quality research focused on reducing inequality in youth outcomes and improving the use of research evidence in decisions that affect young people in the United States. The business’ NAICS code is 813211 - Grantmaking Foundations. 
-
-                    Given the data that was scraped from {website} and these examples, identify the most probable NAICS code and NAICS title. ONLY PROVIDE THE NAICS CODE and a NAICS CODE TITLE, NO OTHER TEXT. 
+                user_prompt = f"""
+                    Given the data that was scraped from {website}, identify the most probable NAICS code and NAICS title. ONLY PROVIDE THE NAICS CODE AND A NAICS CODE TITLE, NO OTHER TEXT. 
                 """
 
                 completion = client.chat.completions.create(
@@ -159,6 +154,8 @@ with col1:
                 
                 # Display results
                 st.success(f"NAICS code determined: {naics_code.strip()}")
+
+                # time.sleep(4)  # Simulate a loading process (e.g., fetching NAICS code)
             
             # st.success("NAICS code determined!")
 
